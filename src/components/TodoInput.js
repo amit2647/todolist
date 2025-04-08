@@ -5,7 +5,7 @@ const TodoInput = ({ addTask }) => {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (taskTitle && taskDescription) {
       const newTask = {
         id: Date.now().toString(),
@@ -13,14 +13,18 @@ const TodoInput = ({ addTask }) => {
         description: taskDescription,
         completed: false,
       };
-      addTask(newTask);
+      await fetch("/api/tasks/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTask),
+      });
       setTaskTitle(""); 
       setTaskDescription(""); 
     }
   };
 
   return (
-    <div className="w-full max-w-2xl bg-white p-6 rounded-lg shadow-md mt-20 mx-auto">
+    <div className="w-full max-w-2xl bg-white p-6 rounded-lg shadow-md m-20 mx-auto">
       <h2 className="text-xl font-semibold text-gray-700 mb-3">Add a New Task</h2>
       
       <input

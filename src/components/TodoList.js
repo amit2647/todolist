@@ -1,6 +1,6 @@
 // src/components/TodoList.js
 import React from "react";
-import TodoItem from "./TodoItem";
+import TodoItem from "./TodoItem.js";
 
 const TodoList = ({ tasks, updateTask, deleteTask }) => {
   return (

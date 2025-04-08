@@ -3,26 +3,30 @@ import { GoHome, GoTasklist, GoCalendar } from "react-icons/go";
 import { HiOutlineCog6Tooth } from "react-icons/hi2";
 import { PiSignOut } from "react-icons/pi";
 import { CiMenuBurger } from "react-icons/ci";
+import { Link } from "react-router-dom";
+
 const Sidebar = ({ isOpen, toggleSidebar }) => {
-  // Menu items with icons
   const menuItems = [
-    { name: "Dashboard", icon: <GoHome /> },
-    { name: "Add Task", icon: <GoTasklist /> },
-    { name: "Calendar", icon: <GoCalendar /> },
-    { name: "Settings", icon: <HiOutlineCog6Tooth /> },
-    { name: "Logout", icon: <PiSignOut /> },
+    { name: "Dashboard", icon: <GoHome />, href: "/" },
+    { name: "Add Task", icon: <GoTasklist />, href: "/AddTask" },
+    { name: "Calendar", icon: <GoCalendar />, href: "/" },
+    { name: "Settings", icon: <HiOutlineCog6Tooth />, href: "/" },
+    { name: "Logout", icon: <PiSignOut />, href: "/" },
   ];
 
   return (
     <div
-      className={`fixed top-0 right-0 h-screen bg-blue-600 text-white transition-all duration-300 ${
+      className={`fixed top-0 right-0 h-screen bg-gray-700 text-white transition-all duration-300 ${
         isOpen ? "w-64" : "w-16"
       }`}
     >
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-4">
+      <div className="flex items-center justify-end p-4">
         <button
-          onClick={toggleSidebar}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleSidebar();
+          }}
           className="text-white p-2 rounded focus:outline-none"
         >
           <CiMenuBurger size={24} />
@@ -30,19 +34,20 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       </div>
 
       {/* Sidebar Menu */}
-      <ul className="p-4 space-y-4">
+      <ul className="p-4 space-y-6">
         {menuItems.map((item, index) => (
           <li key={index}>
-            <a
-              href="/"
-              className="flex items-center text-white text-lg hover:bg-blue-700 p-2 rounded-md"
+            <Link
+              to={item.href}
+              className={`flex items-center text-white text-lg hover:bg-blue-700 pr-5 pl-5 pt-2 pb-2 rounded-md shadow-lg transition-all duration-200 ${
+                isOpen
+                  ? "justify-start bg-blue-600/40"
+                  : "justify-center bg-blue-600/40"
+              }`}
             >
-              {/* Show icon always */}
               <span className="text-2xl">{item.icon}</span>
-
-              {/* Show text only when sidebar is open */}
               {isOpen && <span className="ml-3">{item.name}</span>}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

@@ -1,79 +1,118 @@
-const BUCKEY_SIZE = 100;
-// eslint-disable-next-line array-callback-return
-const taskStore = new Array(BUCKEY_SIZE).fill(null).map(() => {});
+const BUCKET_SIZE = 100;
+const taskStore = new Array(BUCKET_SIZE).fill(null).map(() => []);
 
 const hashFunction = (key) => {
+  if (typeof key !== "string") {
+    console.warn("Invalid key for hashing:", key);
+    return 0;
+  }
+
   let hash = 0;
   for (let i = 0; i < key.length; i++) {
-    hash = (hash + key.charCodeAt(i) * i) % BUCKEY_SIZE;
+    hash = (hash + key.charCodeAt(i) * i) % BUCKET_SIZE;
   }
   return hash;
 };
 
-export const addTask = (task) => {
-  const index = hashFunction(task.id);
-
-  if (!taskStore[index]) {
-    taskStore[index] = [];
+const saveToLocalMemory = (task) => {
+  if (!task || !task.id) {
+    console.warn("Skipping invalid task:", task);
+    return;
   }
 
+  const index = hashFunction(task.id);
+  const bucket = taskStore[index] || [];
+
+  const existingIndex = bucket.findIndex((t) => t.id === task.id);
+  if (existingIndex !== -1) {
+    bucket[existingIndex] = task;
+  } else {
+    bucket.push(task);
+  }
+
+  taskStore[index] = bucket;
+};
+
+
+const removeFromLocalMemory = (taskId) => {
+  const index = hashFunction(taskId);
   const bucket = taskStore[index];
 
-  for (let i = 0; i < bucket.length; i++) {
-    if (bucket[i].id === task.id) {
-      bucket[i] = task;
-      return;
-    }
-  }
+  if (!bucket) return;
 
-  bucket.push(task);
+  const idx = bucket.findIndex((task) => task.id === taskId);
+  if (idx !== -1) {
+    bucket.splice(idx, 1);
+  }
+};
+
+export const addTask = async (task) => {
+  await fetch("/api/tasks/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(task),
+  });
+
+  saveToLocalMemory(task);
+};
+
+export const updateTask = async (task) => {
+  const taskToUpdate = { ...task };
+  delete taskToUpdate._id;
+
+  await fetch("/api/tasks/update", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(taskToUpdate),
+  });
+
+  saveToLocalMemory(taskToUpdate);
+  return getAllTasks();
+};
+
+
+export const deleteTask = async (taskId) => {
+  await fetch(`/api/tasks/delete/${taskId}`, {
+    method: "DELETE",
+  });
+
+  removeFromLocalMemory(taskId);
+  return getAllTasks();
 };
 
 export const getTask = (taskId) => {
   const index = hashFunction(taskId);
   const bucket = taskStore[index] || [];
 
-  for (let task of bucket) {
-    if (task.id === taskId) return task;
-  }
-
-  return undefined;
+  return bucket.find((task) => task.id === taskId);
 };
 
-export const getAllTasks = () => {
-  const store = Array.isArray(taskStore) ? taskStore : [];
+export const getAllTasks = async () => {
+  try {
+    const res = await fetch("/api/tasks");
+    const tasks = await res.json();
 
-  return store
-    .filter((bucket) => Array.isArray(bucket) && bucket.length)
-    .flat();
-};
+    const cleanTasks = tasks.map(({ _id, ...t }) => t);
 
-export const updateTask = (updatedTask) => {
-  const index = hashFunction(updatedTask.id);
-  const bucket = taskStore[index];
-  if (!bucket) return;
-
-  taskStore[index] = bucket.map((task) =>
-    task.id === updatedTask.id ? { ...task, ...updatedTask } : task
-  );
-};
-
-export const deleteTask = (taskId) => {
-  const index = hashFunction(taskId);
-  const bucket = taskStore[index];
-
-  if (!bucket) return;
-
-  for (let i = 0; i < bucket.length; i++) {
-    if (bucket[i].id === taskId) {
-      bucket.splice(i, 1);
-      return;
+    for (let task of cleanTasks) {
+      saveToLocalMemory(task);
     }
+
+    return cleanTasks;
+  } catch (err) {
+    console.error("Error fetching tasks:", err);
+    return [];
   }
 };
 
-export const resetStore = () => {
-  for (let i = 0; i < BUCKEY_SIZE; i++) {
+
+export const resetStore = async () => {
+  for (let i = 0; i < BUCKET_SIZE; i++) {
     taskStore[i] = [];
   }
+
+  await fetch("/api/tasks/reset", {
+    method: "POST",
+  });
 };
+// Remove MongoDB _id
