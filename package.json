@@ -43,9 +43,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "dev-server": "node src/api/server.js"
+    "dev-server": "node src/api/server.js",
+    "deploy": "vercel --prod"
   },
   "eslintConfig": {
     "extends": [
