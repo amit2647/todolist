@@ -15,15 +15,15 @@ async function main() {
 
     console.log(" Connected to MongoDB");
 
-    // Add task
     app.post("/api/tasks/add", async (req, res) => {
       try {
         const task = req.body;
-
-        if (!task || !task.id || !task.title) {
-          return res.status(400).json({ error: "Invalid task format" });
+    
+        if (!task || !task.id || !task.title || !task.userId) {
+          return res.status(400).json({ error: "Invalid task format or missing userId" });
         }
-
+    
+        // Insert task with userId
         await tasks.insertOne(task);
         res.status(201).json({ message: "Task added" });
       } catch (e) {
@@ -31,6 +31,7 @@ async function main() {
         res.status(500).json({ error: "Failed to add task" });
       }
     });
+    
 
     // Get all tasks
     app.get("/api/tasks", async (req, res) => {

@@ -21,7 +21,7 @@ const Layout = () => {
 
         {/* Main Content (Pass isSidebarOpen to Outlet) */}
         <div
-          className={`transition-all duration-300 ${
+          className={`transition-all duration-500 ${
             isSidebarOpen ? "mr-16" : "mr-16"
           } p-6 mt-16 ml-10`}
         >

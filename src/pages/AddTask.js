@@ -15,7 +15,7 @@ const Tasks = () => {
 
   return (
     <div
-      className={`transition-all duration-300 ${
+      className={`transition-all duration-500 ${
         isSidebarOpen ? "mr-64" : "mr-16"
       } p-6 mt-20 bg-gray-200 rounded-lg shadow-md`}
     >

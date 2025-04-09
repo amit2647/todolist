@@ -4,13 +4,23 @@ import "./index.css";
 import App from "./App.js";
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals.js";
+import { ClerkProvider } from "@clerk/clerk-react";
+
+// const PUBLISHABLE_KEY = process.env.VITE_CLERK_PUBLISHABLE_KEY
+const PUBLISHABLE_KEY = "pk_test_Y3VyaW91cy1zcGFycm93LTEuY2xlcmsuYWNjb3VudHMuZGV2JA";
+
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key")
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ClerkProvider>
   </React.StrictMode>
 );
 
