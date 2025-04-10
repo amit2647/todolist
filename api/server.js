@@ -135,5 +135,5 @@ app.post("/api/tasks/reset", async (req, res) => {
   }
 });
 
-// Serverless handler export
-export default serverless(app); // Default export for serverless function
+// Default export for Vercel's serverless function handler
+export default (req, res) => serverless(app)(req, res); // Proper default export for Vercel
