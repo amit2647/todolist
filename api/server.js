@@ -136,4 +136,4 @@ app.post("/api/tasks/reset", async (req, res) => {
 });
 
 // Serverless handler export
-export const handler = serverless(app); // Make the app serverless
+export default serverless(app); // Default export for serverless function
