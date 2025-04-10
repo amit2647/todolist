@@ -1,7 +1,6 @@
-import "dotenv/config";
 import express from "express";
+import "dotenv/config";
 import clientPromise from "../src/utils/mongo.js";
-import serverless from "serverless-http";
 
 const app = express();
 app.use(express.json());
@@ -135,5 +134,5 @@ app.post("/api/tasks/reset", async (req, res) => {
   }
 });
 
-// Default export for Vercel's serverless function handler
-export default (req, res) => serverless(app)(req, res); // Proper default export for Vercel
+// Export the Express app directly for Vercel
+module.exports = app;  // Ensure the export matches Vercel's expectations
