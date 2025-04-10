@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
-import clientPromise from "../utils/mongo.js";
-const serverless = require("serverless-http");
+import clientPromise from "../src/utils/mongo.js";
+import serverless from "serverless-http";
 
 const app = express();
 app.use(express.json());
@@ -136,4 +136,4 @@ app.post("/api/tasks/reset", async (req, res) => {
 });
 
 // Serverless handler export
-module.exports.handler = serverless(app); // Make the app serverless
+export const handler = serverless(app); // Make the app serverless

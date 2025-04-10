@@ -43,7 +43,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "dev-server": "node src/api/server.js",
+    "dev-server": "node api/server.js",
     "deploy": "vercel --prod"
   },
   "eslintConfig": {
