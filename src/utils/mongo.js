@@ -1,5 +1,4 @@
-import { MongoClient } from "mongodb";
-
+const { MongoClient } = require("mongodb");
 
 const uri = process.env.MONGO_URI;
 const options = {
@@ -20,4 +19,4 @@ if (!global._mongoClientPromise) {
 }
 clientPromise = global._mongoClientPromise;
 
-export default clientPromise;
+module.exports = clientPromise;
