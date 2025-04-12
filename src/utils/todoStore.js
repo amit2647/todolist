@@ -1,75 +1,28 @@
 // supabaseTaskStore.js
-import { supabase }  from './superbase.js';
+import { supabase } from './supabase.js';
 
-const BUCKET_SIZE = 100;
-const taskStore = new Array(BUCKET_SIZE).fill(null).map(() => []);
-
-const hashFunction = (key) => {
-  if (typeof key !== "string") {
-    console.warn("Invalid key for hashing:", key);
-    return 0;
-  }
-
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    hash = (hash + key.charCodeAt(i) * i) % BUCKET_SIZE;
-  }
-  return hash;
-};
-
-const saveToLocalMemory = (task) => {
-  if (!task || !task.id) {
-    console.warn("Skipping invalid task:", task);
-    return;
-  }
-
-  const index = hashFunction(task.id);
-  const bucket = taskStore[index] || [];
-
-  const existingIndex = bucket.findIndex((t) => t.id === task.id);
-  if (existingIndex !== -1) {
-    bucket[existingIndex] = task;
-  } else {
-    bucket.push(task);
-  }
-
-  taskStore[index] = bucket;
-};
-
-const removeFromLocalMemory = (taskId) => {
-  const index = hashFunction(taskId);
-  const bucket = taskStore[index];
-
-  if (!bucket) return;
-
-  const idx = bucket.findIndex((task) => task.id === taskId);
-  if (idx !== -1) {
-    bucket.splice(idx, 1);
-  }
-};
-
-//  Add Task
+// Add Task
 export const addTask = async (task) => {
-  saveToLocalMemory(task);
-
   const supabaseTask = {
     ...task,
     assignedDate: new Date(task.assignedDate).toISOString(),
     deadline: new Date(task.deadline).toISOString(),
   };
 
-  const { error } = await supabase.from('tasks').insert([supabaseTask]);
-  if (error) console.error('Error adding task to Supabase:', error);
+  const { data, error } = await supabase.from('tasks').insert([supabaseTask]);
+  if (error) {
+    console.error('Error adding task to Supabase:', error);
+  } else {
+    console.log('Task added successfully:', data);
+  }
 };
 
-//  Update Task
+// Update Task
 export const updateTask = async (task) => {
   const taskToUpdate = { ...task };
   delete taskToUpdate._id; // just in case
 
-  saveToLocalMemory(taskToUpdate);
-
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('tasks')
     .update({
       ...taskToUpdate,
@@ -78,30 +31,40 @@ export const updateTask = async (task) => {
     })
     .eq('id', taskToUpdate.id);
 
-  if (error) console.error('Error updating task in Supabase:', error);
+  if (error) {
+    console.error('Error updating task in Supabase:', error);
+  } else {
+    console.log('Task updated successfully:', data);
+  }
 
   return getAllTasks();
 };
 
-//  Delete Task
+// Delete Task
 export const deleteTask = async (taskId) => {
-  removeFromLocalMemory(taskId);
-
-  const { error } = await supabase.from('tasks').delete().eq('id', taskId);
-  if (error) console.error('Error deleting task in Supabase:', error);
+  const { data, error } = await supabase.from('tasks').delete().eq('id', taskId);
+  if (error) {
+    console.error('Error deleting task in Supabase:', error);
+  } else {
+    console.log('Task deleted successfully:', data);
+  }
 
   return getAllTasks();
 };
 
-//  Get Task
-export const getTask = (taskId) => {
-  const index = hashFunction(taskId);
-  const bucket = taskStore[index] || [];
+// Get Task
+export const getTask = async (taskId) => {
+  const { data, error } = await supabase.from('tasks').select('*').eq('id', taskId).single();
+  if (error) {
+    console.error('Error fetching task from Supabase:', error);
+    return null;
+  }
 
-  return bucket.find((task) => task.id === taskId);
+  console.log('Fetched task from Supabase:', data);
+  return data;
 };
 
-//  Get All Tasks
+// Get All Tasks
 export const getAllTasks = async () => {
   const { data, error } = await supabase.from('tasks').select('*');
   if (error) {
@@ -109,16 +72,6 @@ export const getAllTasks = async () => {
     return [];
   }
 
-  // Update local memory store
-  resetStore();
-  data.forEach(saveToLocalMemory);
-
+  console.log('Fetched tasks from Supabase:', data);
   return data;
-};
-
-//  Reset
-export const resetStore = async () => {
-  for (let i = 0; i < BUCKET_SIZE; i++) {
-    taskStore[i] = [];
-  }
 };
