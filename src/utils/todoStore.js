@@ -33,7 +33,6 @@ const saveToLocalMemory = (task) => {
   taskStore[index] = bucket;
 };
 
-
 const removeFromLocalMemory = (taskId) => {
   const index = hashFunction(taskId);
   const bucket = taskStore[index];
@@ -47,12 +46,6 @@ const removeFromLocalMemory = (taskId) => {
 };
 
 export const addTask = async (task) => {
-  await fetch("/api/tasks/add", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(task),
-  });
-
   saveToLocalMemory(task);
 };
 
@@ -60,22 +53,11 @@ export const updateTask = async (task) => {
   const taskToUpdate = { ...task };
   delete taskToUpdate._id;
 
-  await fetch("/api/tasks/update", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(taskToUpdate),
-  });
-
   saveToLocalMemory(taskToUpdate);
   return getAllTasks();
 };
 
-
 export const deleteTask = async (taskId) => {
-  await fetch(`/api/tasks/delete/${taskId}`, {
-    method: "DELETE",
-  });
-
   removeFromLocalMemory(taskId);
   return getAllTasks();
 };
@@ -88,31 +70,15 @@ export const getTask = (taskId) => {
 };
 
 export const getAllTasks = async () => {
-  try {
-    const res = await fetch("/api/tasks");
-    const tasks = await res.json();
-
-    const cleanTasks = tasks.map(({ _id, ...t }) => t);
-
-    for (let task of cleanTasks) {
-      saveToLocalMemory(task);
-    }
-
-    return cleanTasks;
-  } catch (err) {
-    console.error("Error fetching tasks:", err);
-    return [];
+  const allTasks = [];
+  for (let bucket of taskStore) {
+    allTasks.push(...bucket);
   }
+  return allTasks;
 };
-
 
 export const resetStore = async () => {
   for (let i = 0; i < BUCKET_SIZE; i++) {
     taskStore[i] = [];
   }
-
-  await fetch("/api/tasks/reset", {
-    method: "POST",
-  });
 };
-// Remove MongoDB _id

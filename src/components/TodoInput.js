@@ -21,20 +21,16 @@ const TodoInput = ({ addTask }) => {
         completed: false,
         userId: user.id, // Store the userId in the task
       };
-
-      // Send the task to the backend API to save it to MongoDB
-      await fetch("/api/tasks/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newTask),
-      });
-
+  
+      // Add the task to local memory store
+      await addTask(newTask);
+  
       // Reset fields
       setTaskTitle("");
       setTaskDescription("");
       setAssignedDate("");
       setDeadline("");
-
+  
       // Redirect to the /tasks page
       navigate("/tasks");
     }
