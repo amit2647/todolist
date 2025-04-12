@@ -4,6 +4,7 @@ import FilterButtons from "../components/FilterButtons.js";
 import TodoList from "../components/TodoList.js";
 import { useUser } from "@clerk/clerk-react"; // Import the Clerk hook
 import { getAllTasks, updateTask, deleteTask } from "../utils/todoStore.js";
+import { SignInButton } from "@clerk/clerk-react";
 
 const Tasks = () => {
   const { isSidebarOpen = false } = useOutletContext() || {};
@@ -90,9 +91,25 @@ const Tasks = () => {
     return true; // covers "all" and any fallback
   });
 
-  // Render loading state if the user is not loaded
   if (loading || !user) {
-    return <div>Loading tasks...</div>;
+    return (
+      <div className={`flex justify-center items-start min-h-screen transition-all duration-300 ${isSidebarOpen ? "mr-64" : "mr-16"} bg-gray-100 pt-20`}> 
+        {/* pt-20 gives space from the top to account for the fixed navbar */}
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            Welcome to Your To-Do'S App!
+          </h2>
+          <p className="text-gray-600 mb-6">
+            To start organizing your tasks and staying focused, please sign in to your account.
+          </p>
+          <SignInButton>
+            <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-indigo-700 transition shadow-lg">
+              Sign In
+            </button>
+          </SignInButton>
+        </div>
+      </div>
+    );
   }
 
   return (

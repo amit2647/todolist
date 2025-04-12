@@ -1,5 +1,5 @@
 // supabaseTaskStore.js
-import { supabase } from './supabase.js';
+import { supabase } from './superbase.js';
 
 // Add Task
 export const addTask = async (task) => {

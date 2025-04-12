@@ -17,7 +17,7 @@ const Tasks = () => {
     <div
       className={`transition-all duration-500 ${
         isSidebarOpen ? "mr-64" : "mr-16"
-      } p-6 mt-20 bg-gray-200 rounded-lg shadow-md`}
+      } p-6 mt-6 bg-gray-200 rounded-lg shadow-md`}
     >
       <TodoInput addTask={handleAddTask} />
     </div>

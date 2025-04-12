@@ -4,7 +4,8 @@ import Layout from "./components/Layout.js";
 import Tasks from "./pages/Tasks.js";
 import AddTask from "./pages/AddTask.js";
 import CalendarPage from "./pages/Calender.js";
-import RequireAuth from "./components/RequireAuth.js"; // 👈
+import RequireAuth from "./components/RequireAuth.js";
+import LandingPage from "./pages/LandingPage.js";
 
 import { SignIn, SignUp } from "@clerk/clerk-react";
 
@@ -22,8 +23,9 @@ const App = () => {
 
       {/* Public Routes */}
       <Route path="/" element={<Layout />}>
-        <Route index element={<Tasks />} /> {/* Tasks page is public */}
+        <Route index element={<LandingPage />} /> {/* Tasks page is public */}
         <Route path="tasks" element={<Tasks />} />
+        <Route path="LandingPage" element={<LandingPage/>}/>
       </Route>
 
       {/* Protected Routes */}

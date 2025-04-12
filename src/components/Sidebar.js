@@ -18,7 +18,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const clerk = useClerk();
 
   const menuItems = [
-    { name: "Dashboard", icon: <GoHome />, href: "/" },
+    { name: "Dashboard", icon: <GoHome />, href: "/tasks" },
     { name: "Add Task", icon: <GoTasklist />, href: "/AddTask" },
     { name: "Calendar", icon: <GoCalendar />, href: "/calendar" },
   ];

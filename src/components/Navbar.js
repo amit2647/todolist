@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";  // Import Link from react-router-dom
 import logo from "../logo.png";
 
 const Navbar = ({ isSidebarOpen }) => {
@@ -9,11 +10,13 @@ const Navbar = ({ isSidebarOpen }) => {
       }`}
     >
       <div className="container mx-auto px-6 text-center text-2xl font-bold text-gray-800 flex justify-center items-center">
-        <img 
-          src={logo} 
-          alt="logo" 
-          className="max-w-[150px] h-auto"
-        />
+        <Link to="/"> {/* Wrap logo with Link to enable navigation */}
+          <img 
+            src={logo} 
+            alt="logo" 
+            className="max-w-[150px] h-auto"
+          />
+        </Link>
       </div>
     </nav>
   );
