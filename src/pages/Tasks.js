@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import FilterButtons from "../components/FilterButtons.js";
 import TodoList from "../components/TodoList.js";
-import { useUser } from "@clerk/clerk-react"; // Import the Clerk hook
 import { getAllTasks, updateTask, deleteTask } from "../utils/todoStore.js";
 import { SignInButton } from "@clerk/clerk-react";
+import { AiOutlineLoading } from "react-icons/ai";
+
 
 const Tasks = () => {
-  const { isSidebarOpen = false } = useOutletContext() || {};
-  const { user } = useUser();
+  const { isSidebarOpen = false, user } = useOutletContext() || {};
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true); // Track loading state
@@ -91,16 +91,34 @@ const Tasks = () => {
     return true; // covers "all" and any fallback
   });
 
-  if (loading || !user) {
+  if (loading) {
     return (
-      <div className={`flex justify-center items-start min-h-screen transition-all duration-300 ${isSidebarOpen ? "mr-64" : "mr-16"} bg-gray-100 pt-20`}> 
-        {/* pt-20 gives space from the top to account for the fixed navbar */}
+      <div
+        className={`flex justify-center items-start min-h-screen transition-all duration-300 ${
+          isSidebarOpen ? "mr-64" : "mr-16"
+        } bg-gray-100 pt-20`}
+      >
+        <div className="text-center p-8 flex flex-col items-center justify-center">
+          <AiOutlineLoading className="animate-spin text-4xl text-indigo-600 mb-4" />
+        </div>
+      </div>
+    );
+  }  
+
+  if (!user) {
+    return (
+      <div
+        className={`flex justify-center items-start min-h-screen transition-all duration-300 ${
+          isSidebarOpen ? "mr-64" : "mr-16"
+        } bg-gray-100 pt-20`}
+      >
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Welcome to Your To-Do'S App!
           </h2>
           <p className="text-gray-600 mb-6">
-            To start organizing your tasks and staying focused, please sign in to your account.
+            To start organizing your tasks and staying focused, please sign in
+            to your account.
           </p>
           <SignInButton>
             <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-indigo-700 transition shadow-lg">

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
+  const [assignedDate, setAssignedDate] = useState("");
   const [deadline, setDeadline] = useState("");
 
   const formatDateForInput = (date) => {
@@ -15,9 +16,10 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
     if (task) {
       setTitle(task.title);
       setDescription(task.description);
+      setAssignedDate(formatDateForInput(task.assignedDate));
       setDeadline(formatDateForInput(task.deadline));
     }
-  }, [task]);
+  }, [task]);  
 
   const handleUpdate = async () => {
     const updatedTask = {
@@ -53,6 +55,12 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
           className="w-full mb-3 p-2 border rounded"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+        />
+        <input
+          type="date"
+          className="w-full mb-4 p-2 border rounded"
+          value={assignedDate}
+          onChange={(e) => setAssignedDate(e.target.value)}
         />
         <input
           type="date"
