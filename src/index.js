@@ -6,8 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals.js";
 import { ClerkProvider } from "@clerk/clerk-react";
 
-// const PUBLISHABLE_KEY = process.env.VITE_CLERK_PUBLISHABLE_KEY
-const PUBLISHABLE_KEY = "pk_test_Y3VyaW91cy1zcGFycm93LTEuY2xlcmsuYWNjb3VudHMuZGV2JA";
+const PUBLISHABLE_KEY = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key")
