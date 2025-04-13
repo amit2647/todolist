@@ -24,8 +24,6 @@ const TodoList = ({ tasks, updateTask, deleteTask, userId }) => {
     updateTask(updatedTask);
     handleCloseModal();
   };
-
-  console.log("tasks",filteredTasks);
   
   
   return (

@@ -13,7 +13,7 @@ export const addTask = async (task) => {
   if (error) {
     console.error('Error adding task to Supabase:', error);
   } else {
-    console.log('Task added successfully:', data);
+    console.log('Task added successfully:');
   }
 };
 
@@ -34,7 +34,7 @@ export const updateTask = async (task) => {
   if (error) {
     console.error('Error updating task in Supabase:', error);
   } else {
-    console.log('Task updated successfully:', data);
+    console.log('Task updated successfully:');
   }
 
   return getAllTasks();
@@ -46,7 +46,7 @@ export const deleteTask = async (taskId) => {
   if (error) {
     console.error('Error deleting task in Supabase:', error);
   } else {
-    console.log('Task deleted successfully:', data);
+    console.log('Task deleted successfully:');
   }
 
   return getAllTasks();
@@ -60,7 +60,7 @@ export const getTask = async (taskId) => {
     return null;
   }
 
-  console.log('Fetched task from Supabase:', data);
+  
   return data;
 };
 
@@ -72,6 +72,6 @@ export const getAllTasks = async () => {
     return [];
   }
 
-  console.log('Fetched tasks from Supabase:', data);
+  
   return data;
 };

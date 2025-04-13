@@ -21,8 +21,6 @@ const Tasks = () => {
       return;
     }
 
-    console.log("User loaded:", user); // Debug log
-
     const loadTasks = async () => {
       try {
         const allTasks = await getAllTasks(user.id); // Use user.id when available
