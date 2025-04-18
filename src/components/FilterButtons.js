@@ -14,7 +14,7 @@ const FilterButtons = ({ filterTasks, currentFilter }) => {
   };
 
   return (
-    <div className="filter-buttons mb-4 p-4 flex items-start gap-4">
+    <div className="filter-buttons flex flex-wrap items-center justify-start gap-4 mb-6 px-4">
       <button
         onClick={() => filterTasks("all")}
         className={getButtonClass("all")}

@@ -7,7 +7,7 @@ const TodoList = ({ tasks, updateTask, deleteTask, userId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Filter tasks based on the userId
-  const filteredTasks = tasks.filter(task => task.userId === userId);
+  const filteredTasks = tasks.filter((task) => task.userId === userId);
 
   // Handle opening the modal and setting the task
   const handleEditTask = (task) => {
@@ -24,10 +24,9 @@ const TodoList = ({ tasks, updateTask, deleteTask, userId }) => {
     updateTask(updatedTask);
     handleCloseModal();
   };
-  
-  
+
   return (
-    <div className="todo-list space-y-3 p-4">
+    <div className="todo-list flex flex-col gap-4 p-4">
       {filteredTasks.length > 0 ? (
         filteredTasks.map((task) => (
           <TodoItem

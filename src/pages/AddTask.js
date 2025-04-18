@@ -4,7 +4,7 @@ import TodoInput from "../components/TodoInput.js";
 import { addTask, getAllTasks } from "../utils/todoStore.js";
 
 const Tasks = () => {
-  const { isSidebarOpen } = useOutletContext();
+  const { isSidebarOpen } = useOutletContext() || {};
   // eslint-disable-next-line no-unused-vars
   const [tasks, setTasks] = useState(getAllTasks());
 
@@ -15,9 +15,8 @@ const Tasks = () => {
 
   return (
     <div
-      className={`transition-all duration-500 ${
-        isSidebarOpen ? "mr-64" : "mr-16"
-      } p-6 mt-6 bg-gray-200 rounded-lg shadow-md`}
+    className={`flex flex-col flex-1 transition-all duration-300 ${
+      isSidebarOpen ? "ml-0" : "ml-0"}`}
     >
       <TodoInput addTask={handleAddTask} />
     </div>

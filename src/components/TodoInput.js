@@ -7,8 +7,8 @@ const TodoInput = ({ addTask }) => {
   const [taskDescription, setTaskDescription] = useState("");
   const [assignedDate, setAssignedDate] = useState("");
   const [deadline, setDeadline] = useState("");
-  const { user } = useUser(); // Get the current logged-in user
-  const navigate = useNavigate(); // Hook for navigation
+  const { user } = useUser();
+  const navigate = useNavigate();
 
   const handleAddTask = async () => {
     if (taskTitle && taskDescription && assignedDate && deadline) {
@@ -19,67 +19,84 @@ const TodoInput = ({ addTask }) => {
         assignedDate: new Date(assignedDate),
         deadline: new Date(deadline),
         completed: false,
-        userId: user.id, // Store the userId in the task
+        userId: user.id,
       };
-  
-      // Add the task to local memory store
+
       await addTask(newTask);
-  
-      // Reset fields
+
       setTaskTitle("");
       setTaskDescription("");
       setAssignedDate("");
       setDeadline("");
-  
-      // Redirect to the /tasks page
+
       navigate("/tasks");
     }
   };
 
   return (
-    <div className="w-full max-w-2xl bg-white p-6 rounded-lg shadow-md m-20 mx-auto">
-      <h2 className="text-xl font-semibold text-gray-700 mb-3">
-        Add a New Task
-      </h2>
+    <div className="flex justify-start items-start p-4">
+      <div className="w-full bg-white p-8 rounded-xl shadow-xl flex flex-col space-y-5">
+        <h2 className="text-2xl font-bold text-gray-700 text-start">
+          Add a New Task
+        </h2>
 
-      <p className="text-l font-semibold text-gray-700 mb-1 ml-2">Title</p>
-      <input
-        type="text"
-        value={taskTitle}
-        onChange={(e) => setTaskTitle(e.target.value)}
-        placeholder="Task Title..."
-        className="w-full p-3 mb-3 rounded-md border border-gray-300"
-      />
-      <p className="text-l font-semibold text-gray-700 mb-1 ml-2">
-        Description
-      </p>
-      <textarea
-        value={taskDescription}
-        onChange={(e) => setTaskDescription(e.target.value)}
-        placeholder="Task Description..."
-        className="w-full p-3 mb-3 h-24 rounded-md border border-gray-300"
-      ></textarea>
-      <p className="text-l font-semibold text-gray-700 mb-1 ml-2">Start Date</p>
-      <input
-        type="date"
-        value={assignedDate}
-        onChange={(e) => setAssignedDate(e.target.value)}
-        className="w-full p-3 mb-3 rounded-md border border-gray-300"
-      />
-      <p className="text-l font-semibold text-gray-700 mb-1 ml-2">End Date</p>
-      <input
-        type="date"
-        value={deadline}
-        onChange={(e) => setDeadline(e.target.value)}
-        className="w-full p-3 mb-3 rounded-md border border-gray-300"
-      />
+        <div className="flex flex-col space-y-2">
+          <label className="text-lg font-medium text-gray-700 ml-1">
+            Title
+          </label>
+          <input
+            type="text"
+            value={taskTitle}
+            onChange={(e) => setTaskTitle(e.target.value)}
+            placeholder="Task Title..."
+            className="p-3 rounded-md border border-gray-300"
+          />
+        </div>
 
-      <button
-        onClick={handleAddTask}
-        className="w-full bg-blue-500 text-white py-3 text-lg rounded-md hover:bg-blue-700 transition"
-      >
-        Add Task
-      </button>
+        <div className="flex flex-col space-y-2">
+          <label className="text-lg font-medium text-gray-700 ml-1">
+            Description
+          </label>
+          <textarea
+            value={taskDescription}
+            onChange={(e) => setTaskDescription(e.target.value)}
+            placeholder="Task Description..."
+            className="p-3 h-28 rounded-md border border-gray-300 resize-none"
+          ></textarea>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+          <div className="flex flex-col flex-1 space-y-2">
+            <label className="text-lg font-medium text-gray-700 ml-1">
+              Start Date
+            </label>
+            <input
+              type="date"
+              value={assignedDate}
+              onChange={(e) => setAssignedDate(e.target.value)}
+              className="p-3 rounded-md border border-gray-300"
+            />
+          </div>
+          <div className="flex flex-col flex-1 space-y-2">
+            <label className="text-lg font-medium text-gray-700 ml-1">
+              End Date
+            </label>
+            <input
+              type="date"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              className="p-3 rounded-md border border-gray-300"
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={handleAddTask}
+          className="w-full max-w-xs bg-blue-600 text-white py-3 text-lg rounded-lg hover:bg-blue-700 transition font-semibold shadow"
+        >
+          Add Task
+        </button>
+      </div>
     </div>
   );
 };

@@ -7,9 +7,9 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
   const [deadline, setDeadline] = useState("");
 
   const formatDateForInput = (date) => {
-    if (!date) return ""; // Return an empty string if the date is invalid
+    if (!date) return "";
     const d = new Date(date);
-    return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0]; // Validate the date
+    return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
   };
 
   useEffect(() => {
@@ -19,14 +19,14 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
       setAssignedDate(formatDateForInput(task.assignedDate));
       setDeadline(formatDateForInput(task.deadline));
     }
-  }, [task]);  
+  }, [task]);
 
   const handleUpdate = async () => {
     const updatedTask = {
       ...task,
       title,
       description,
-      deadline: new Date(deadline) || null, // Use `null` if the deadline is invalid
+      deadline: new Date(deadline) || null,
     };
 
     await fetch(`/api/tasks/update`, {
@@ -42,41 +42,59 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
   if (!isOpen || !task) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">Edit Task</h2>
-        <input
-          type="text"
-          className="w-full mb-3 p-2 border rounded"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          className="w-full mb-3 p-2 border rounded"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          type="date"
-          className="w-full mb-4 p-2 border rounded"
-          value={assignedDate}
-          onChange={(e) => setAssignedDate(e.target.value)}
-        />
-        <input
-          type="date"
-          className="w-full mb-4 p-2 border rounded"
-          value={deadline}
-          onChange={(e) => setDeadline(e.target.value)}
-        />
-        <div className="flex justify-end gap-3">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg flex flex-col gap-4">
+        <h2 className="text-xl font-semibold">Edit Task</h2>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Title</label>
+          <input
+            type="text"
+            className="p-2 border rounded"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Description</label>
+          <textarea
+            className="p-2 border rounded resize-none"
+            rows={3}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Start Date</label>
+          <input
+            type="date"
+            className="p-2 border rounded"
+            value={assignedDate}
+            onChange={(e) => setAssignedDate(e.target.value)}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Deadline</label>
+          <input
+            type="date"
+            className="p-2 border rounded"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+          />
+        </div>
+
+        <div className="flex justify-end gap-3 pt-2">
           <button
-            className="bg-gray-400 text-white px-4 py-2 rounded"
+            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 transition"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
             onClick={handleUpdate}
           >
             Save Changes

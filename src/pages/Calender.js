@@ -10,7 +10,7 @@ import TaskEditModal from "../components/TaskEditModal.js"; // Import the modal 
 const localizer = momentLocalizer(moment);
 
 const CalendarPage = () => {
-  const { isSidebarOpen = false } = useOutletContext() || {};
+  const { isSidebarOpen } = useOutletContext() || {};
   const { user } = useUser(); // Get the current user from Clerk
   const [tasks, setTasks] = useState([]);
   const [view, setView] = useState("month"); // Default view
@@ -76,9 +76,8 @@ const CalendarPage = () => {
 
   return (
     <div
-      className={`p-6 transition-all duration-500 ${
-        isSidebarOpen ? "mr-64" : "mr-20"
-      }`}
+    className={`flex flex-col flex-1 transition-all duration-300 p-6 bg-gray-150 rounded-lg shadow-md ${
+      isSidebarOpen ? "ml-0" : "ml-0"}`}
     >
       <h1 className="text-2xl font-semibold mb-4">Calendar</h1>
 

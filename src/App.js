@@ -12,6 +12,7 @@ import { SignIn, SignUp } from "@clerk/clerk-react";
 const App = () => {
   return (
     <Routes>
+      {/* Clerk Auth Pages */}
       <Route
         path="/sign-in"
         element={<SignIn routing="path" path="/sign-in" />}
@@ -21,24 +22,30 @@ const App = () => {
         element={<SignUp routing="path" path="/sign-up" />}
       />
 
-      {/* Public Routes */}
+      {/* Shared Layout for all pages */}
       <Route path="/" element={<Layout />}>
-        <Route index element={<LandingPage />} /> {/* Tasks page is public */}
+        {/* Public Routes */}
+        <Route index element={<LandingPage />} />
         <Route path="tasks" element={<Tasks />} />
-        <Route path="LandingPage" element={<LandingPage/>}/>
-      </Route>
+        <Route path="LandingPage" element={<LandingPage />} />
 
-      {/* Protected Routes */}
-      <Route
-        path="/"
-        element={
-          <RequireAuth>
-            <Layout />
-          </RequireAuth>
-        }
-      >
-        <Route path="AddTask" element={<AddTask />} />
-        <Route path="calendar" element={<CalendarPage />} />
+        {/* Protected Routes */}
+        <Route
+          path="AddTask"
+          element={
+            <RequireAuth>
+              <AddTask />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="calendar"
+          element={
+            <RequireAuth>
+              <CalendarPage />
+            </RequireAuth>
+          }
+        />
       </Route>
     </Routes>
   );

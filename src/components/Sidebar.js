@@ -25,7 +25,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <div
-      className={`fixed top-0 right-0 h-screen bg-gray-600 text-white transition-all duration-500 ease-in-out ${
+      className={`h-full bg-gray-600 text-white transition-all duration-500 ease-in-out ${
         isOpen ? "w-64" : "w-16"
       }`}
     >

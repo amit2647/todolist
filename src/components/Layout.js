@@ -1,33 +1,28 @@
-// Layout.js
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar.js";
 import Sidebar from "./Sidebar.js";
-import { useUser } from "@clerk/clerk-react"; // Import Clerk hook
+import { useUser } from "@clerk/clerk-react";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const { user } = useUser(); // Get user once here
+  const { user } = useUser();
 
   return (
-    <div className="bg-gray-100 min-h-screen flex">
+    <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <Sidebar
         isOpen={isSidebarOpen}
-        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        toggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
       />
 
-      {/* Main Section */}
+      {/* Main area */}
       <div className="flex flex-col flex-1">
-        {/* Navbar */}
         <Navbar isSidebarOpen={isSidebarOpen} />
 
-        {/* Main Content (Pass isSidebarOpen and user to Outlet) */}
-        <div
-          className={`transition-all duration-500 ${
-            isSidebarOpen ? "mr-16" : "mr-16"
-          } p-6 mt-16 ml-10`}
-        >
+        {/* Content area */}
+        <div className="flex-1 overflow-auto p-6">
+          {/* Provide context to child components */}
           <Outlet context={{ isSidebarOpen, user }} />
         </div>
       </div>

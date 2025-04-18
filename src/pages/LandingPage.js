@@ -1,18 +1,20 @@
 import React from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+} from "@clerk/clerk-react";
+import { useOutletContext } from "react-router-dom";
 import { FaRocket, FaCalendarAlt, FaSync } from "react-icons/fa";
 
 const LandingPage = () => {
+  const { isSidebarOpen } = useOutletContext() || {};
   const navigate = useNavigate();
-  const { isSidebarOpen = false } = useOutletContext() || {};
-
   return (
-    <div
-      className={`transition-all duration-300 ${
-        isSidebarOpen ? "mr-64" : "mr-16"
-      } pt-24 px-6`}
-    >
+    <div className={`flex flex-col flex-1 transition-all duration-300 p-6 ${
+        isSidebarOpen ? "ml-0" : "ml-0"}`}>
       <div className="max-w-4xl mx-auto text-center text-gray-600">
         <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6 drop-shadow-md">
           Stay Organized. <br />
@@ -21,7 +23,8 @@ const LandingPage = () => {
           </span>
         </h1>
         <p className="text-lg md:text-xl mb-10 text-gray-600/90">
-          Manage your tasks easily with a minimal, fast, and secure to-do app built for you.
+          Manage your tasks easily with a minimal, fast, and secure to-do app
+          built for you.
         </p>
 
         <SignedOut>
@@ -49,10 +52,10 @@ const LandingPage = () => {
         </SignedIn>
       </div>
 
-      {/* Floating Feature Cards */}
-      <div className="max-w-6xl mx-auto mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+      {/* Floating Feature Cards with Flex Layout */}
+      <div className="max-w-6xl mx-auto mt-20 flex flex-wrap justify-center gap-6 px-6">
         {/* Card 1 */}
-        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1">
+        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1 w-full sm:w-80">
           <div className="text-indigo-600 text-3xl mb-4">
             <FaRocket />
           </div>
@@ -63,7 +66,7 @@ const LandingPage = () => {
         </div>
 
         {/* Card 2 */}
-        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1">
+        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1 w-full sm:w-80">
           <div className="text-purple-600 text-3xl mb-4">
             <FaCalendarAlt />
           </div>
@@ -74,7 +77,7 @@ const LandingPage = () => {
         </div>
 
         {/* Card 3 */}
-        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1">
+        <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition transform hover:-translate-y-1 w-full sm:w-80">
           <div className="text-pink-600 text-3xl mb-4">
             <FaSync />
           </div>
