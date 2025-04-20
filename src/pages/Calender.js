@@ -4,41 +4,34 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { getAllTasks } from "../utils/todoStore.js";
 import { useOutletContext } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react"; // Import useUser hook from Clerk
-import TaskEditModal from "../components/TaskEditModal.js"; // Import the modal component
+import { useUser } from "@clerk/clerk-react";
+import TaskEditModal from "../components/TaskEditModal.js";
 
 const localizer = momentLocalizer(moment);
 
 const CalendarPage = () => {
   const { isSidebarOpen } = useOutletContext() || {};
-  const { user } = useUser(); // Get the current user from Clerk
+  const { user } = useUser();
   const [tasks, setTasks] = useState([]);
-  const [view, setView] = useState("month"); // Default view
-  const [selectedTask, setSelectedTask] = useState(null); // Store the selected task
-  const [isModalOpen, setIsModalOpen] = useState(false); // Track if modal is open
-  const [currentDate, setCurrentDate] = useState(new Date()); // Track current date for navigation
+  const [view, setView] = useState("month");
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Fetch and filter tasks based on the current user
   useEffect(() => {
     const loadTasks = async () => {
-      if (!user) {
-        console.log("User not loaded yet"); // Debugging user loading
-        return;
-      }
-
+      if (!user) return;
       try {
-        const data = await getAllTasks(); // Get all tasks
-        const filteredTasks = data.filter((task) => task.userId === user.id); // Filter tasks by userId
-        setTasks(filteredTasks); // Set filtered tasks
+        const data = await getAllTasks();
+        const filtered = data.filter((task) => task.userId === user.id);
+        setTasks(filtered);
       } catch (error) {
         console.error("Error loading tasks:", error);
       }
     };
-
     loadTasks();
-  }, [user]); // Re-fetch tasks whenever user changes
+  }, [user]);
 
-  // Map tasks to events
   const events = tasks.map((task) => ({
     id: task.id,
     title: task.title,
@@ -47,46 +40,36 @@ const CalendarPage = () => {
     allDay: true,
   }));
 
-  // Handle event click
-  const handleEventClick = async (event) => {
-    const taskTitle = event.title;
-    const task = tasks.find((t) => t.title === taskTitle); // Find task by title
-
+  const handleEventClick = (event) => {
+    const task = tasks.find((t) => t.title === event.title);
     if (task) {
-      setSelectedTask(task); // Set the selected task
-      setIsModalOpen(true); // Open the modal
+      setSelectedTask(task);
+      setIsModalOpen(true);
     }
   };
 
-  // Handle change of month and year
   const handleMonthChange = (e) => {
-    const newDate = moment(currentDate).month(e.target.value).toDate();
-    setCurrentDate(newDate);
+    setCurrentDate(moment(currentDate).month(e.target.value).toDate());
   };
 
   const handleYearChange = (e) => {
-    const newDate = moment(currentDate).year(e.target.value).toDate();
-    setCurrentDate(newDate);
+    setCurrentDate(moment(currentDate).year(e.target.value).toDate());
   };
 
-  // Render loading state if the user is not loaded
-  if (!user) {
-    return <div>Loading...</div>;
-  }
+  if (!user) return <div>Loading...</div>;
 
   return (
     <div
-      className={`flex flex-col flex-1 transition-all duration-300 shadow-md min-h-screen bg-gray-200 p-20 ${
+      className={`flex flex-col flex-1 min-h-screen bg-gray-200 transition-all duration-300 ${
         isSidebarOpen ? "ml-0" : "ml-0"
-      }`}
+      } p-4 md:p-8 lg:p-12`}
     >
-      <h1 className="text-2xl font-semibold mb-4">Calendar</h1>
+      <h1 className="text-lg md:text-2xl font-semibold mb-3">Calendar</h1>
 
-      {/* Custom Month and Year Selection */}
-      <div className="flex items-center mb-4">
-        {/* Year Dropdown */}
+      {/* Compact Dropdowns */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <select
-          className="p-2 border rounded mr-4 border-gray-900 bg-white"
+          className="p-2 border border-gray-300 rounded bg-white w-full sm:w-auto"
           value={moment(currentDate).year()}
           onChange={handleYearChange}
         >
@@ -99,9 +82,8 @@ const CalendarPage = () => {
           )}
         </select>
 
-        {/* Month Dropdown */}
         <select
-          className="p-2 border rounded border-gray-900 bg-white"
+          className="p-2 border border-gray-300 rounded bg-white w-full sm:w-auto"
           value={moment(currentDate).month()}
           onChange={handleMonthChange}
         >
@@ -113,31 +95,32 @@ const CalendarPage = () => {
         </select>
       </div>
 
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        views={["week", "month"]}
-        view={view}
-        onView={(newView) => setView(newView)}
-        onSelectEvent={handleEventClick} // Set the click handler for events
-        date={currentDate} // Use the current date for rendering
-        onNavigate={(date) => setCurrentDate(date)} // Update the current date when navigating
-        style={{ height: 500 }}
-        className="rounded-lg shadow-md p-10 bg-white"
-      />
+      {/* Calendar */}
+      <div className="rounded shadow bg-white p-2 md:p-4">
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          views={["week", "month"]}
+          view={view}
+          onView={setView}
+          onSelectEvent={handleEventClick}
+          date={currentDate}
+          onNavigate={setCurrentDate}
+          style={{ height: 450 }}
+        />
+      </div>
 
-      {/* Task Edit Modal */}
+      {/* Edit Modal */}
       {selectedTask && (
         <TaskEditModal
           isOpen={isModalOpen}
           task={selectedTask}
-          onClose={() => setIsModalOpen(false)} // Close the modal
+          onClose={() => setIsModalOpen(false)}
           onUpdate={(updatedTask) => {
-            // Handle task update (e.g., update tasks state, etc.)
-            setTasks((prevTasks) =>
-              prevTasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)),
+            setTasks((prev) =>
+              prev.map((t) => (t.id === updatedTask.id ? updatedTask : t)),
             );
           }}
         />

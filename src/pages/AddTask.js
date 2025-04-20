@@ -15,11 +15,12 @@ const Tasks = () => {
 
   return (
     <div
-      className={`flex flex-col flex-1 transition-all duration-300 min-h-screen bg-gray-200 p-20 ${
+      className={`flex flex-col flex-1 transition-all duration-300 min-h-screen bg-gray-200 p-6 sm:p-10 md:p-16 lg:p-20 ${
         isSidebarOpen ? "ml-0" : "ml-0"
       }`}
     >
       <TodoInput addTask={handleAddTask} />
+      {/* You can optionally map and render tasks here */}
     </div>
   );
 };
