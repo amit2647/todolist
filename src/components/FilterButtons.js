@@ -1,6 +1,8 @@
 import React from "react";
 import { IoAdd } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { MdFileDownloadDone } from "react-icons/md";
+import { LuClock3 } from "react-icons/lu";
 
 const FilterButtons = ({ filterTasks, currentFilter }) => {
   const navigate = useNavigate();
@@ -8,8 +10,8 @@ const FilterButtons = ({ filterTasks, currentFilter }) => {
   const getButtonClass = (type) => {
     return `px-5 py-2 rounded-lg font-semibold transition duration-300 ease-in-out ${
       currentFilter === type
-        ? "bg-blue-800 text-white transform scale-105 shadow-lg"
-        : "bg-blue-400 text-white hover:bg-blue-600 transform hover:scale-105 shadow-md"
+        ? "bg-dark-gray text-white transform scale-105 shadow-lg"
+        : "bg-gray-300 text-black hover:bg-teal-600 hover:text-white transform hover:scale-105 shadow-md"
     }`;
   };
 
@@ -25,19 +27,19 @@ const FilterButtons = ({ filterTasks, currentFilter }) => {
         onClick={() => filterTasks("completed")}
         className={getButtonClass("completed")}
       >
-        Completed
+        <MdFileDownloadDone className="size-6" />
       </button>
       <button
         onClick={() => filterTasks("pending")}
         className={getButtonClass("pending")}
       >
-        Pending
+        <LuClock3 className="size-6" />
       </button>
       <button
         onClick={() => navigate("/AddTask")}
         className={getButtonClass("add")}
       >
-        <IoAdd className="text-2xl" />
+        <IoAdd className="size-6" />
       </button>
     </div>
   );

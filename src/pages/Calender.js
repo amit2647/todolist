@@ -76,8 +76,9 @@ const CalendarPage = () => {
 
   return (
     <div
-    className={`flex flex-col flex-1 transition-all duration-300 p-6 bg-gray-150 rounded-lg shadow-md ${
-      isSidebarOpen ? "ml-0" : "ml-0"}`}
+      className={`flex flex-col flex-1 transition-all duration-300 shadow-md min-h-screen bg-gray-200 p-20 ${
+        isSidebarOpen ? "ml-0" : "ml-0"
+      }`}
     >
       <h1 className="text-2xl font-semibold mb-4">Calendar</h1>
 
@@ -85,7 +86,7 @@ const CalendarPage = () => {
       <div className="flex items-center mb-4">
         {/* Year Dropdown */}
         <select
-          className="p-2 border rounded mr-4"
+          className="p-2 border rounded mr-4 border-gray-900 bg-white"
           value={moment(currentDate).year()}
           onChange={handleYearChange}
         >
@@ -94,13 +95,13 @@ const CalendarPage = () => {
               <option key={year} value={year}>
                 {year}
               </option>
-            )
+            ),
           )}
         </select>
 
         {/* Month Dropdown */}
         <select
-          className="p-2 border rounded"
+          className="p-2 border rounded border-gray-900 bg-white"
           value={moment(currentDate).month()}
           onChange={handleMonthChange}
         >
@@ -124,6 +125,7 @@ const CalendarPage = () => {
         date={currentDate} // Use the current date for rendering
         onNavigate={(date) => setCurrentDate(date)} // Update the current date when navigating
         style={{ height: 500 }}
+        className="rounded-lg shadow-md p-10 bg-white"
       />
 
       {/* Task Edit Modal */}
@@ -135,7 +137,7 @@ const CalendarPage = () => {
           onUpdate={(updatedTask) => {
             // Handle task update (e.g., update tasks state, etc.)
             setTasks((prevTasks) =>
-              prevTasks.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+              prevTasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)),
             );
           }}
         />

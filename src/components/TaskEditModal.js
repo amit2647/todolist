@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { FaCircle, FaChevronUp, FaChevronDown } from "react-icons/fa";
+
+const priorities = [
+  { value: "HIGH", label: "High", color: "text-violet-500" },
+  { value: "NORMAL", label: "Normal", color: "text-fuchsia-500" },
+  { value: "LOW", label: "Low", color: "text-teal-500" },
+  { value: "NONE", label: "None", color: "text-gray-400" },
+];
 
 const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
   const [assignedDate, setAssignedDate] = useState("");
   const [deadline, setDeadline] = useState("");
+  const [priority, setPriority] = useState(task?.priority || "NONE");
+  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
   const formatDateForInput = (date) => {
     if (!date) return "";
@@ -18,6 +28,7 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
       setDescription(task.description);
       setAssignedDate(formatDateForInput(task.assignedDate));
       setDeadline(formatDateForInput(task.deadline));
+      setPriority(task.priority || "NONE");
     }
   }, [task]);
 
@@ -27,6 +38,7 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
       title,
       description,
       deadline: new Date(deadline) || null,
+      priority,
     };
 
     await fetch(`/api/tasks/update`, {
@@ -84,6 +96,51 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
           />
+        </div>
+
+        {/* Priority Dropdown */}
+        <div className="relative w-full">
+          <label className="text-lg font-medium text-gray-700 ml-1">
+            Priority
+          </label>
+
+          {/* Button for triggering dropdown */}
+          <div
+            className="flex items-center justify-between p-3 border border-gray-300 rounded-md cursor-pointer w-full md:w-auto"
+            onClick={() => setIsOpenDropdown(!isOpenDropdown)}
+          >
+            <div className="flex items-center gap-2">
+              <FaCircle
+                className={`${priorities.find((p) => p.value === priority)?.color} text-sm`}
+              />
+              <span className="ml-2">
+                {priorities.find((p) => p.value === priority)?.label}
+              </span>
+            </div>
+            {/* Toggle icon for dropdown */}
+            <span className="text-gray-400">
+              {isOpenDropdown ? <FaChevronUp /> : <FaChevronDown />}
+            </span>
+          </div>
+
+          {/* Dropdown menu */}
+          {isOpenDropdown && (
+            <div className="absolute mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto z-10">
+              {priorities.map((option) => (
+                <div
+                  key={option.value}
+                  className="flex items-center gap-2 p-3 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    setPriority(option.value);
+                    setIsOpenDropdown(false); // Close dropdown after selection
+                  }}
+                >
+                  <FaCircle className={`${option.color} text-sm`} />
+                  <span>{option.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-end gap-3 pt-2">
