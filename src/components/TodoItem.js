@@ -1,5 +1,7 @@
 import React from "react";
 import { MdDelete } from "react-icons/md";
+import { MdDateRange } from "react-icons/md";
+import { FaCircle } from "react-icons/fa";
 
 const TodoItem = ({ task, updateTask, deleteTask, onEditTask }) => {
   const formatDate = (date) => {
@@ -8,58 +10,82 @@ const TodoItem = ({ task, updateTask, deleteTask, onEditTask }) => {
     return new Date(date).toLocaleDateString(undefined, options);
   };
 
+  const priorities = {
+    HIGH: "text-violet-500",
+    NORMAL: "text-fuchsia-500",
+    LOW: "text-teal-500",
+    NONE: "text-gray-400",
+  };
+
   return (
-    <div className="todo-item bg-white p-6 rounded-lg shadow-md mb-4">
-      <div className="flex justify-between items-start">
-        {/* Title + Description */}
-        <div className="task-content flex-1 bg-gray-200/90 p-4 rounded-sm mr-4">
+    <div className="todo-item flex flex-col bg-white p-4 rounded-lg shadow-md">
+      {/* Top section: Title/Description + Controls */}
+      <div className="flex flex-col md:flex-row justify-between items-start gap-4 p-2">
+        {/* Task content */}
+        <div
+          className="flex-1 rounded-sm cursor-pointer"
+          onClick={() => onEditTask(task)}
+        >
           <h3
             className={`text-xl font-semibold ${
               task.completed ? "line-through text-gray-500" : "text-gray-800"
             }`}
-            onClick={() => onEditTask(task)}
-            style={{ cursor: "pointer" }}
           >
             {task.title}
           </h3>
-          <p className="text-gray-600 text-sm mt-2 ml-1">{task.description}</p>
+          {/* <p className="text-gray-600 text-sm mt-2 ml-1">{task.description}</p> */}
         </div>
-  
-        {/* Right section with fixed width to prevent layout shift */}
-        <div className="w-[200px] flex-shrink-0 flex items-center space-x-4 mt-1">
-          <div className="flex items-center space-x-2 mr-2">
+
+        {/* Right side: checkbox + status + delete */}
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 flex-shrink-0 md:w-[320px] w-full">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={task.completed}
-              onChange={() => updateTask({ ...task, completed: !task.completed })}
+              onChange={() =>
+                updateTask({ ...task, completed: !task.completed })
+              }
               className="h-6 w-6 rounded-lg border-gray-300 checked:bg-blue-500"
             />
-            {/* Set a fixed width to prevent text from shifting layout */}
-            <span className={`text-sm font-bold w-[80px] block ${task.completed ? "text-green-500" : "text-slate-500"}`}>
+            <span
+              className={`text-sm font-bold w-[80px] block ${
+                task.completed ? "text-green-500" : "text-slate-500"
+              }`}
+            >
               {task.completed ? "Completed" : "Pending"}
             </span>
           </div>
           <MdDelete
             onClick={() => deleteTask(task.id)}
-            className="text-3xl text-zinc-400 cursor-pointer mr-2"
+            className="text-3xl text-zinc-400 cursor-pointer ml-10"
           />
         </div>
       </div>
-  
-      {/* Dates, still matching task-content width */}
-      <div className="task-content mt-4">
-        <div className="flex space-x-5">
-          <p className="text-sm text-black/80 bg-blue-400/90 pt-2 pb-2 pr-4 pl-4  rounded-md">
-            <strong className="mr-2">Assigned:</strong> {formatDate(task.assignedDate)}
-          </p>
-          <p className="text-sm text-black/80 bg-blue-400/90 pt-2 pb-2 pr-4 pl-4 rounded-md">
-            <strong className="mr-2">Deadline:</strong> {formatDate(task.deadline)}
-          </p>
+
+      {/* Dates */}
+      <div className="flex flex-wrap gap-6 pl-2">
+        <div className="group relative flex items-center gap-2 text-sm text-black/80 py-2 rounded-md">
+          <MdDateRange className="text-2xl " />
+          <span>{formatDate(task.deadline)}</span>
+
+          {/* Tooltip / Hover label */}
+          <span className="absolute -bottom-6 left-1 -translate-x-1 text-xs bg-gray-100 text-black px-4 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition duration-200">
+            Task Due
+          </span>
+        </div>
+        {/* Priority section */}
+        <div className="group relative flex items-center gap-2 text-sm text-black/80 py-2 rounded-md">
+          <FaCircle className={`${priorities[task.priority]} text-md`} />
+          <span>{task.priority ? task.priority : "None"}</span>
+
+          {/* Tooltip / Hover label */}
+          <span className="absolute -bottom-6 left-1 -translate-x-1 text-xs w-40 bg-gray-100 text-black px-4 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition duration-200">
+            Task Priority
+          </span>
         </div>
       </div>
     </div>
   );
-  
 };
 
 export default TodoItem;

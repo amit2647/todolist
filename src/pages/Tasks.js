@@ -5,19 +5,25 @@ import TodoList from "../components/TodoList.js";
 import { getAllTasks, updateTask, deleteTask } from "../utils/todoStore.js";
 import { SignInButton } from "@clerk/clerk-react";
 import { AiOutlineLoading } from "react-icons/ai";
-
+import logo from "../logo.png";
 
 const Tasks = () => {
-  const { isSidebarOpen = false, user } = useOutletContext() || {};
+  const { user, isSidebarOpen } = useOutletContext() || {};
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true); // Track loading state
 
   // Ensure user is loaded before fetching tasks
   useEffect(() => {
+    if (user === undefined) {
+      // still waiting for user context to load
+      setLoading(true);
+      return;
+    }
+
     if (!user) {
-      console.log("User not loaded yet"); // Debug log
-      setLoading(true); // Set loading to true while the user data is being fetched
+      // user is confirmed to be signed out
+      setLoading(false);
       return;
     }
 
@@ -43,7 +49,7 @@ const Tasks = () => {
 
     // 1. Optimistically update UI
     setTasks((prevTasks) =>
-      prevTasks.map((t) => (t.id === task.id ? { ...t, ...task } : t))
+      prevTasks.map((t) => (t.id === task.id ? { ...t, ...task } : t)),
     );
 
     try {
@@ -91,25 +97,17 @@ const Tasks = () => {
 
   if (loading) {
     return (
-      <div
-        className={`flex justify-center items-start min-h-screen transition-all duration-300 ${
-          isSidebarOpen ? "mr-64" : "mr-16"
-        } bg-gray-100 pt-20`}
-      >
+      <div className="flex flex-1 justify-center items-center bg-gray-200 pt-50 min-h-screen ">
         <div className="text-center p-8 flex flex-col items-center justify-center">
           <AiOutlineLoading className="animate-spin text-4xl text-indigo-600 mb-4" />
         </div>
       </div>
     );
-  }  
+  }
 
   if (!user) {
     return (
-      <div
-        className={`flex justify-center items-start min-h-screen transition-all duration-300 ${
-          isSidebarOpen ? "mr-64" : "mr-16"
-        } bg-gray-100 pt-20`}
-      >
+      <div className="flex flex-1 justify-center items-start bg-gray-200 pt-20 min-h-screen">
         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Welcome to Your To-Do'S App!
@@ -130,10 +128,13 @@ const Tasks = () => {
 
   return (
     <div
-      className={`transition-all duration-300 ${
-        isSidebarOpen ? "mr-64" : "mr-16"
-      } p-6 mt-20 bg-gray-200 rounded-lg shadow-md`}
+      className={`flex flex-col flex-1 transition-all duration-300 p-12 bg-gray-200 min-h-screen ${
+        isSidebarOpen ? "ml-0" : "ml-0"
+      }`}
     >
+      <div className="flex justify-start items-start mb-6 ml-4">
+        <img src={logo} alt="logo" className="max-w-[120px] h-auto" />
+      </div>
       {/* Display tasks for both signed-in and signed-out users */}
       <FilterButtons filterTasks={handleFilterTasks} currentFilter={filter} />
       <TodoList
