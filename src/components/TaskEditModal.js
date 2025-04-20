@@ -19,7 +19,13 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
   const formatDateForInput = (date) => {
     if (!date) return "";
     const d = new Date(date);
-    return isNaN(d.getTime()) ? "" : d.toISOString().split("T")[0];
+    if (isNaN(d.getTime())) return "";
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
   };
 
   useEffect(() => {
@@ -37,16 +43,10 @@ const TaskEditModal = ({ isOpen, task, onClose, onUpdate }) => {
       ...task,
       title,
       description,
+      assignedDate: new Date(assignedDate) || null,
       deadline: new Date(deadline) || null,
       priority,
     };
-
-    await fetch(`/api/tasks/update`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedTask),
-    });
-
     onUpdate(updatedTask);
     onClose();
   };
