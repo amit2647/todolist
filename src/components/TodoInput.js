@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
-import { FaCircle } from "react-icons/fa";
-import { FaChevronUp } from "react-icons/fa";
-import { FaChevronDown } from "react-icons/fa";
+import { FaCircle, FaChevronUp, FaChevronDown } from "react-icons/fa";
 
 const TodoInput = ({ addTask }) => {
   const [taskTitle, setTaskTitle] = useState("");
@@ -47,9 +45,10 @@ const TodoInput = ({ addTask }) => {
       navigate("/tasks");
     }
   };
+
   return (
-    <div className="flex justify-start items-start p-4">
-      <div className="w-full bg-white p-8 rounded-xl shadow-xl flex flex-col space-y-5">
+    <div className="flex justify-start items-start w-full p-4 overflow-x-hidden">
+      <div className="w-full bg-white p-6 sm:p-8 rounded-xl shadow-xl flex flex-col space-y-5 max-w-full">
         <h2 className="text-2xl font-bold text-gray-700 text-start">
           Add a New Task
         </h2>
@@ -63,7 +62,7 @@ const TodoInput = ({ addTask }) => {
             value={taskTitle}
             onChange={(e) => setTaskTitle(e.target.value)}
             placeholder="Task Title..."
-            className="p-3 rounded-md border border-gray-300"
+            className="p-3 rounded-md border border-gray-300 w-full max-w-full"
           />
         </div>
 
@@ -75,31 +74,29 @@ const TodoInput = ({ addTask }) => {
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.target.value)}
             placeholder="Task Description..."
-            className="p-3 h-28 rounded-md border border-gray-300 resize-none"
-          ></textarea>
+            className="p-3 h-28 rounded-md border border-gray-300 resize-none w-full max-w-full"
+          />
         </div>
 
+        {/* Priority Dropdown */}
         <div className="relative w-full">
           <label className="text-lg font-medium text-gray-700 ml-1">
             Priority
           </label>
 
-          {/* Button for triggering dropdown */}
           <div
-            className="flex items-center justify-between p-3 border border-gray-300 rounded-md cursor-pointer w-full md:w-auto"
+            className="flex items-center justify-between p-3 border border-gray-300 rounded-md cursor-pointer w-full"
             onClick={() => setIsOpen(!isOpen)}
           >
             <div className="flex items-center gap-2">
               <FaCircle className={`${selected.color} text-sm`} />
               <span className="ml-2">{selected.label}</span>
             </div>
-            {/* Toggle icon for dropdown */}
             <span className="text-gray-400">
               {isOpen ? <FaChevronUp /> : <FaChevronDown />}
             </span>
           </div>
 
-          {/* Dropdown menu */}
           {isOpen && (
             <div className="absolute mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto z-10">
               {priorities.map((option) => (
@@ -108,7 +105,7 @@ const TodoInput = ({ addTask }) => {
                   className="flex items-center gap-2 p-3 hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
                     setPriority(option.value);
-                    setIsOpen(false); // Close dropdown after selection
+                    setIsOpen(false);
                   }}
                 >
                   <FaCircle className={`${option.color} text-sm`} />
@@ -119,7 +116,8 @@ const TodoInput = ({ addTask }) => {
           )}
         </div>
 
-        <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+        {/* Date Fields */}
+        <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 w-full">
           <div className="flex flex-col flex-1 space-y-2">
             <label className="text-lg font-medium text-gray-700 ml-1">
               Start Date
@@ -128,7 +126,7 @@ const TodoInput = ({ addTask }) => {
               type="date"
               value={assignedDate}
               onChange={(e) => setAssignedDate(e.target.value)}
-              className="p-3 rounded-md border border-gray-300"
+              className="p-3 rounded-md border border-gray-300 w-full"
             />
           </div>
           <div className="flex flex-col flex-1 space-y-2">
@@ -139,14 +137,15 @@ const TodoInput = ({ addTask }) => {
               type="date"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="p-3 rounded-md border border-gray-300"
+              className="p-3 rounded-md border border-gray-300 w-full"
             />
           </div>
         </div>
 
+        {/* Submit Button */}
         <button
           onClick={handleAddTask}
-          className="w-full max-w-xs bg-blue-600 text-white py-3 text-lg rounded-lg hover:bg-blue-700 transition font-semibold shadow"
+          className="w-full sm:w-auto bg-blue-600 text-white py-3 text-lg rounded-lg hover:bg-blue-700 transition font-semibold shadow"
         >
           Add Task
         </button>
