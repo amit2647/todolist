@@ -1,79 +1,129 @@
-import React from "react";
-import { MdDelete, MdDateRange } from "react-icons/md";
-import { FaCircle } from "react-icons/fa";
+import React, { useState } from "react";
+import { MdDelete, MdDateRange, MdExpandMore } from "react-icons/md";
+
+// Utility function for date formatting
+const formatDate = (date) => {
+  if (!date) return "No due date";
+  const options = { year: "numeric", month: "short", day: "numeric" };
+  return new Date(date).toLocaleDateString(undefined, options);
+};
+
+// Priority configuration
+const priorities = {
+  HIGH: {
+    color: "bg-purple-100 text-purple-700 border-purple-300",
+    label: "High",
+  },
+  NORMAL: {
+    color: "bg-blue-100 text-blue-700 border-blue-300",
+    label: "Normal",
+  },
+  LOW: { color: "bg-teal-100 text-teal-700 border-teal-300", label: "Low" },
+  NONE: { color: "bg-gray-100 text-gray-600 border-gray-300", label: "None" },
+};
 
 const TodoItem = ({ task, updateTask, deleteTask, onEditTask }) => {
-  const formatDate = (date) => {
-    if (!date) return "";
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return new Date(date).toLocaleDateString(undefined, options);
-  };
+  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
-  const priorities = {
-    HIGH: "text-violet-500",
-    NORMAL: "text-fuchsia-500",
-    LOW: "text-teal-500",
-    NONE: "text-gray-400",
+  const toggleDescription = (e) => {
+    e.stopPropagation();
+    setIsDescriptionOpen((prev) => !prev);
   };
 
   return (
-    <div className="todo-item flex flex-col bg-white p-3 rounded-lg shadow-sm">
-      {/* Task Row */}
-      <div className="flex flex-col md:flex-row justify-between items-start gap-3">
+    <div className="flex flex-col bg-white p-4 sm:p-5 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 mb-4 border border-gray-100 max-w-full">
+      {/* Main Task Row */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         {/* Title & Description */}
-        <div className="flex-1 cursor-pointer" onClick={() => onEditTask(task)}>
-          <h3
-            className={`text-base md:text-lg font-semibold ${
-              task.completed ? "line-through text-gray-400" : "text-gray-800"
-            }`}
-          >
-            {task.title}
-          </h3>
-          {/* <p className="text-gray-600 text-sm mt-1">{task.description}</p> */}
+        <div
+          className="flex-1 cursor-pointer p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+          onClick={() => onEditTask(task)}
+          onKeyDown={(e) => e.key === "Enter" && onEditTask(task)}
+          role="button"
+          tabIndex={0}
+          aria-label={`Edit task: ${task.title}`}
+        >
+          <div className="flex items-center justify-between">
+            <h3
+              className={`text-lg sm:text-xl font-semibold ${
+                task.completed ? "line-through text-gray-500" : "text-gray-900"
+              }`}
+            >
+              {task.title}
+            </h3>
+            {task.description && (
+              <button
+                onClick={toggleDescription}
+                className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-full p-1"
+                aria-expanded={isDescriptionOpen}
+                aria-controls={`description-${task.id}`}
+                aria-label={
+                  isDescriptionOpen
+                    ? "Collapse description"
+                    : "Expand description"
+                }
+              >
+                <MdExpandMore
+                  className={`text-xl transform transition-transform duration-200 ${
+                    isDescriptionOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            )}
+          </div>
+          {task.description && isDescriptionOpen && (
+            <p
+              id={`description-${task.id}`}
+              className="text-gray-600 text-sm sm:text-base mt-2 animate-slide-down"
+            >
+              {task.description}
+            </p>
+          )}
         </div>
 
         {/* Status & Controls */}
-        <div className="flex flex-col md:flex-row gap-2 items-start md:items-center md:w-[280px] w-full">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={task.completed}
               onChange={() =>
                 updateTask({ ...task, completed: !task.completed })
               }
-              className="h-5 w-5 rounded-md border-gray-300 accent-blue-500"
+              className="h-5 w-5 rounded-md border-gray-300 accent-blue-600 focus:ring-2 focus:ring-blue-300 transition-transform duration-150 hover:scale-110"
+              aria-label={`Mark task ${task.title} as ${task.completed ? "incomplete" : "completed"}`}
             />
             <span
-              className={`text-sm font-medium w-[80px] ${
-                task.completed ? "text-green-500" : "text-slate-500"
+              className={`text-sm font-medium ${
+                task.completed ? "text-green-600" : "text-gray-600"
               }`}
             >
-              {task.completed ? "Completed" : "Pending"}
+              {task.completed ? "Done" : "Pending"}
             </span>
-          </div>
-
-          <MdDelete
+          </label>
+          <button
             onClick={() => deleteTask(task.id)}
-            className="text-2xl text-zinc-400 hover:text-red-500 cursor-pointer ml-1 md:ml-4"
-          />
+            className="text-2xl text-gray-400 hover:text-red-600 focus:text-red-600 focus:ring-2 focus:ring-red-300 rounded-full p-1 transition-all duration-150 hover:scale-110"
+            aria-label={`Delete task ${task.title}`}
+          >
+            <MdDelete />
+          </button>
         </div>
       </div>
 
-      {/* Dates & Priority */}
-      <div className="flex flex-wrap gap-4 mt-3 text-sm text-black/80 pl-1">
-        <div className="group relative flex items-center gap-2">
-          <MdDateRange className="text-xl" />
+      {/* Metadata (Dates & Priority) */}
+      <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-700">
+        <div className="flex items-center gap-2">
+          <MdDateRange className="text-lg text-gray-500" />
           <span>{formatDate(task.deadline)}</span>
-          <span className="absolute -bottom-6 left-0 text-xs bg-gray-100 text-black px-3 py-1 rounded shadow opacity-0 group-hover:opacity-100 transition">
-            Task Due
-          </span>
         </div>
-
-        <div className="group relative flex items-center gap-2">
-          <FaCircle className={`${priorities[task.priority]} text-sm`} />
-          <span>{task.priority || "None"}</span>
-          <span className="absolute -bottom-6 left-0 text-xs bg-gray-100 text-black px-3 py-1 rounded shadow opacity-0 group-hover:opacity-100 transition">
-            Task Priority
+        <div className="flex items-center gap-2">
+          <span
+            className={`px-2 py-0.5 rounded-full border text-xs font-medium ${
+              priorities[task.priority]?.color || priorities.NONE.color
+            }`}
+          >
+            {priorities[task.priority]?.label || "None"}
           </span>
         </div>
       </div>

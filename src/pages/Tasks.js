@@ -5,10 +5,9 @@ import TodoList from "../components/TodoList.js";
 import { getAllTasks, updateTask, deleteTask } from "../utils/todoStore.js";
 import { SignInButton } from "@clerk/clerk-react";
 import { AiOutlineLoading } from "react-icons/ai";
-import logo from "../logo.png";
 
 const Tasks = () => {
-  const { user, isSidebarOpen } = useOutletContext() || {};
+  const { user } = useOutletContext() || {};
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
@@ -108,18 +107,8 @@ const Tasks = () => {
 
   return (
     <div
-      className={`flex flex-col flex-1 bg-gray-200 transition-all duration-300 min-h-screen ${
-        isSidebarOpen ? "ml-0" : "ml-0"
-      } p-4 md:p-8`}
+      className={`flex flex-col flex-1 bg-gray-200 transition-all duration-300 min-h-screen p-4 md:pr-16 md:pl-16`}
     >
-      <div className="flex justify-start mb-4">
-        <img
-          src={logo}
-          alt="logo"
-          className="h-12 md:h-16 w-auto object-contain"
-        />
-      </div>
-
       <FilterButtons filterTasks={handleFilterTasks} currentFilter={filter} />
 
       <TodoList

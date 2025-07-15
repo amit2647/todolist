@@ -1,33 +1,23 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-// import Navbar from "./Navbar.js";
-import Sidebar from "./Sidebar.js";
+import Navbar from "./Navbar.js";
+// import Sidebar from "./Sidebar.js";
 import { useUser } from "@clerk/clerk-react";
 
 const Layout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user } = useUser();
 
   return (
-    <div className="flex h-screen bg-dark-gray">
-      {/* Sidebar */}
-      <Sidebar
-        isOpen={isSidebarOpen}
-        toggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
-      />
+    <div className="flex flex-col h-screen bg-gray-800">
+      {/* Navbar */}
+      <Navbar />
 
-      {/* Main area */}
-      <div className="flex flex-col flex-1">
-        {/* <Navbar isSidebarOpen={isSidebarOpen} /> */}
-
-        {/* Content area */}
-        <div className="flex-1 overflow-auto">
-          {/* Provide context to child components */}
-          <Outlet context={{ isSidebarOpen, user }} />
-        </div>
+      {/* Content area */}
+      <div className="flex-1 overflow-auto">
+        <Outlet context={{ user }} />
       </div>
     </div>
   );
 };
-
 export default Layout;
