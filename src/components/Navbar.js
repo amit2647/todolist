@@ -196,7 +196,7 @@ const Navbar = () => {
             ) : (
               menuItems.find((item) => item.href === location.pathname)?.icon
             )}
-            <span>{currentSection}</span>
+            <span className="ml-2">{currentSection}</span>
             <svg
               className={`w-5 h-5 ml-2 transform transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
               fill="none"
@@ -238,7 +238,7 @@ const Navbar = () => {
                         }
                       >
                         {item.icon}
-                        <span className="ml-2">{item.name}</span>
+                        <span className="mr-2 ml-2">{item.name}</span>
                       </Link>
                     </li>
                   ))}
